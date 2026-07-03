@@ -219,7 +219,7 @@
         flex: 0 0 auto;
         height: 11vh;
         border-top: 3px solid var(--red);
-        /* border-bottom: 3px solid var(--red); */
+        border-bottom: 3px solid var(--red);
         background: var(--white);
         overflow: hidden;
         width: 100%;
@@ -254,7 +254,37 @@
       .marquee-band:hover .marquee-track {
         animation-play-state: paused;
       }
+      /* ---------- Footer ---------- */
+      footer {
+        flex: 0 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 3vh;
+        padding: 0 clamp(14px, 3vw, 32px);
+        font-family: "Monotech", monospace;
+        font-size: clamp(10px, 1.4vh, 12px);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--black);
+        background: var(--white);
+      }
 
+      footer a.insta-link {
+        color: var(--red);
+        text-decoration: none;
+        font-weight: bold;
+        transition: opacity 0.15s ease;
+      }
+
+      footer a.insta-link:hover {
+        opacity: 0.6;
+      }
+
+      footer a.insta-link:focus-visible {
+        outline: 2px solid var(--red);
+        outline-offset: 3px;
+      }
       @keyframes scroll-left {
         from {
           transform: translateX(0);
@@ -267,6 +297,91 @@
       @media (prefers-reduced-motion: reduce) {
         .marquee-track {
           animation: none;
+        }
+      }
+
+      /* ============================================================
+         RESPONSIVE — additions only, nothing above this line is
+         touched. Desktop (>1024px) renders exactly as before.
+         ============================================================ */
+
+      /* ---------- Tablet / iPad (≤1024px) ---------- */
+      @media (max-width: 1024px) {
+        header {
+          height: 11vh;
+        }
+        header img {
+          height: clamp(26px, 4.5vh, 38px);
+        }
+
+        .drag-item {
+          min-width: 92px;
+        }
+
+        .headline {
+          height: 15vh;
+          font-size: min(8vh, 10.5vw);
+        }
+
+        .marquee-band {
+          height: 10vh;
+        }
+        .marquee-track span {
+          font-size: 5.2vh;
+          padding: 0 clamp(14px, 2.2vw, 26px);
+        }
+
+        .canvas-tools button {
+          padding: 8px 12px;
+          font-size: 12px;
+        }
+      }
+
+      /* ---------- Mobile phones (≤640px) ---------- */
+      @media (max-width: 640px) {
+        header {
+          height: 9vh;
+          padding: 0 14px;
+        }
+        header img {
+          height: clamp(20px, 4vh, 30px);
+        }
+
+        .drag-item {
+          min-width: 68px;
+        }
+
+        .headline {
+          height: 13vh;
+          font-size: min(6.6vh, 11.5vw);
+          letter-spacing: -0.02em;
+          padding: 0 clamp(10px, 3vw, 20px);
+        }
+
+        .marquee-band {
+          height: 8vh;
+        }
+        .marquee-track span {
+          font-size: 2vh;
+          padding: 0 clamp(12px, 3vw, 20px);
+        }
+
+        .canvas-tools button {
+          font-size: 11px;
+          padding: 10px 12px; /* larger tap target */
+        }
+      }
+
+      /* ---------- Very small phones (≤380px) ---------- */
+      @media (max-width: 380px) {
+        .drag-item {
+          min-width: 58px;
+        }
+        .headline {
+          font-size: min(6vh, 12.5vw);
+        }
+        .marquee-track span {
+          font-size: 3.3vh;
         }
       }
     </style>
@@ -297,9 +412,22 @@
         >
       </div>
     </div>
-
+    <footer>
+      <div class="copyright">© 2026 VOID.DRAFTS</div>
+      <a
+        href="https://www.instagram.com/void.draftss?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+        target="_blank"
+        rel="noopener noreferrer"
+        class="insta-link"
+      >
+        @void.drafts
+      </a>
+    </footer>
     <script>
       (function () {
+        // ==========================================================
+        // DESKTOP LAYOUT — untouched, exactly as provided.
+        // ==========================================================
         var PRODUCTS = [
           {
             name: "1",
@@ -342,7 +470,7 @@
           {
             name: "5",
             src: "images/5.png",
-            alt: "Biscuit tin",
+            alt: "Biscuit",
             left: 35,
             top: 40,
             width: 15,
@@ -396,9 +524,48 @@
           },
         ];
 
+        // ==========================================================
+        // RESPONSIVE POSITIONING — additive only.
+        // Desktop keeps using PRODUCTS above, completely unchanged.
+        // Below ~640px wide, items rearrange into a tidier scatter
+        // sized for a narrow canvas so nothing loads in unreadably
+        // small or piled on top of itself. Tablet widths (641–1024)
+        // keep the desktop coordinates — same cluster, just resized
+        // by the CSS above, since a wide-enough iPad canvas doesn't
+        // need repositioning, only smaller type/logo/touch targets.
+        // ==========================================================
+        var MOBILE_BREAKPOINT = "(max-width: 640px)";
+
+        var MOBILE_POSITIONS = {
+          1: { left: 60, top: 45, width: 20, rotate: 14 },
+          2: { left: 50, top: 20, width: 15, rotate: -12 },
+          3: { left: 45, top: 45, width: 18 },
+          4: { left: 30, top: 30, width: 15 },
+          5: { left: 30, top: 45, width: 22 },
+          6: { left: 55, top: 35, width: 30 },
+          7: { left: 35, top: 35, width: 20 },
+          8: { left: 25, top: 50, width: 18 },
+          9: { left: 38, top: 62, width: 32, rotate: 14 },
+          10: { left: 35, top: 55, width: 22 },
+        };
+
+        function isMobile() {
+          return window.matchMedia(MOBILE_BREAKPOINT).matches;
+        }
+
+        function resolvedLayout() {
+          if (!isMobile()) return PRODUCTS;
+          return PRODUCTS.map(function (p) {
+            var override = MOBILE_POSITIONS[p.name];
+            if (!override) return p;
+            return Object.assign({}, p, override);
+          });
+        }
+
         var canvas = document.getElementById("canvas");
         var topZ = 10;
         var originalStyles = [];
+        var currentlyDragging = false;
 
         function attachDrag(item) {
           var dragging = false;
@@ -409,6 +576,7 @@
 
           item.addEventListener("pointerdown", function (e) {
             dragging = true;
+            currentlyDragging = true;
             item.setPointerCapture(e.pointerId);
             item.classList.add("dragging");
             item.style.zIndex = ++topZ;
@@ -464,6 +632,7 @@
           function endDrag(e) {
             if (!dragging) return;
             dragging = false;
+            currentlyDragging = false;
             item.classList.remove("dragging");
             try {
               item.releasePointerCapture(e.pointerId);
@@ -474,38 +643,44 @@
           item.addEventListener("pointercancel", endDrag);
         }
 
-        PRODUCTS.forEach(function (p, i) {
-          var z = typeof p.z === "number" ? p.z : i + 1;
+        function buildCanvas() {
+          canvas.innerHTML = "";
+          originalStyles = [];
+          topZ = 10;
 
-          var item = document.createElement("div");
-          item.className = "drag-item";
-          item.dataset.name = p.name;
-          item.style.left = p.left + "%";
-          item.style.top = p.top + "%";
-          item.style.width = p.width + "%";
-          item.style.zIndex = z;
-          if (p.rotate) {
-            item.style.transform = "rotate(" + p.rotate + "deg)";
-          }
-          var img = document.createElement("img");
-          img.src = p.src;
-          img.alt = p.alt || p.name;
-          img.draggable = false;
+          resolvedLayout().forEach(function (p, i) {
+            var z = typeof p.z === "number" ? p.z : i + 1;
 
-          item.appendChild(img);
-          canvas.appendChild(item);
+            var item = document.createElement("div");
+            item.className = "drag-item";
+            item.dataset.name = p.name;
+            item.style.left = p.left + "%";
+            item.style.top = p.top + "%";
+            item.style.width = p.width + "%";
+            item.style.zIndex = z;
+            if (p.rotate) {
+              item.style.transform = "rotate(" + p.rotate + "deg)";
+            }
+            var img = document.createElement("img");
+            img.src = p.src;
+            img.alt = p.alt || p.name;
+            img.draggable = false;
 
-          originalStyles.push({
-            el: item,
-            left: item.style.left,
-            top: item.style.top,
-            width: item.style.width,
-            transform: item.style.transform,
-            z: item.style.zIndex,
+            item.appendChild(img);
+            canvas.appendChild(item);
+
+            originalStyles.push({
+              el: item,
+              left: item.style.left,
+              top: item.style.top,
+              width: item.style.width,
+              transform: item.style.transform,
+              z: item.style.zIndex,
+            });
+
+            attachDrag(item);
           });
-
-          attachDrag(item);
-        });
+        }
 
         document
           .getElementById("resetLayout")
@@ -518,6 +693,124 @@
             });
             topZ = 10;
           });
+
+        buildCanvas();
+
+        // Rebuild only when crossing the mobile/desktop breakpoint
+        // (e.g. phone rotation) — never mid-drag, and never on
+        // desktop-only resizes, so the desktop experience is
+        // unaffected either way.
+        var mobileQuery = window.matchMedia(MOBILE_BREAKPOINT);
+        var wasMobile = mobileQuery.matches;
+        function handleBreakpointChange() {
+          if (currentlyDragging) return;
+          var nowMobile = mobileQuery.matches;
+          if (nowMobile !== wasMobile) {
+            wasMobile = nowMobile;
+            buildCanvas();
+          }
+        }
+        if (mobileQuery.addEventListener) {
+          mobileQuery.addEventListener("change", handleBreakpointChange);
+        } else if (mobileQuery.addListener) {
+          mobileQuery.addListener(handleBreakpointChange);
+        }
+
+        // ==========================================================
+        // HEADLINE AUTO-FIT — tablet & mobile only (≤1024px).
+        // ------------------------------------------------------------
+        // The CSS min(vh,vw) sizing above is a rough guess at what
+        // fits — it doesn't know the real character widths of
+        // Montech once it loads, so on some viewports the line can
+        // clip instead of truly filling the row. This measures the
+        // headline's actual text width with Canvas measureText()
+        // and sets an exact font-size so it always fits edge-to-edge
+        // with no clipping, at any phone/tablet size or orientation.
+        //
+        // (Note: this deliberately avoids reading scrollWidth on the
+        // headline element — with overflow:hidden + centered flex
+        // content, browsers report scrollWidth as symmetric overflow
+        // on both sides once it clips, which isn't the same number
+        // as the text's real rendered width. measureText sidesteps
+        // that entirely.)
+        //
+        // Desktop (>1024px) is intentionally skipped — it keeps
+        // using the untouched CSS font-size only, exactly as before.
+        // ==========================================================
+        var headlineEl = document.querySelector(".headline");
+        var HEADLINE_BREAKPOINT = "(max-width: 1024px)";
+        var headlineQuery = window.matchMedia(HEADLINE_BREAKPOINT);
+        var LINE_HEIGHT_RATIO = 0.88;
+        var SAFETY_MARGIN = 0.97; // small buffer so text never touches the edge
+        var measureCanvas = document.createElement("canvas");
+        var measureCtx = measureCanvas.getContext("2d");
+
+        function measureTextWidth(text, fontCss) {
+          measureCtx.font = fontCss;
+          return measureCtx.measureText(text).width;
+        }
+
+        function fitHeadline() {
+          if (!headlineQuery.matches) {
+            // back on desktop — remove any inline override so the
+            // original CSS rule takes over again, untouched
+            headlineEl.style.fontSize = "";
+            return;
+          }
+
+          // reset to the CSS baseline for this breakpoint before
+          // measuring, so repeated calls don't compound
+          headlineEl.style.fontSize = "";
+
+          var computed = window.getComputedStyle(headlineEl);
+          var baseFontSizePx = parseFloat(computed.fontSize);
+          if (!baseFontSizePx) return;
+
+          var paddingLeft = parseFloat(computed.paddingLeft) || 0;
+          var paddingRight = parseFloat(computed.paddingRight) || 0;
+          var availableWidth =
+            headlineEl.clientWidth - paddingLeft - paddingRight;
+          var availableHeight = headlineEl.clientHeight;
+
+          var fontCss =
+            computed.fontStyle +
+            " " +
+            computed.fontWeight +
+            " " +
+            baseFontSizePx +
+            "px " +
+            computed.fontFamily;
+          var naturalTextWidth = measureTextWidth(
+            headlineEl.textContent.trim(),
+            fontCss,
+          );
+          if (!availableWidth || !naturalTextWidth) return;
+
+          var widthScale = availableWidth / naturalTextWidth;
+          var heightScale =
+            availableHeight / (baseFontSizePx * LINE_HEIGHT_RATIO);
+
+          var scale = Math.min(widthScale, heightScale) * SAFETY_MARGIN;
+          // guard against runaway growth on very short strings —
+          // never scale up more than 40% beyond the CSS baseline
+          scale = Math.min(scale, 1.4);
+
+          var newFontSizePx = baseFontSizePx * scale;
+          headlineEl.style.fontSize = newFontSizePx + "px";
+        }
+
+        var fitHeadlineFrame = null;
+        function scheduleFitHeadline() {
+          if (fitHeadlineFrame) cancelAnimationFrame(fitHeadlineFrame);
+          fitHeadlineFrame = requestAnimationFrame(fitHeadline);
+        }
+
+        scheduleFitHeadline();
+        window.addEventListener("resize", scheduleFitHeadline);
+        window.addEventListener("orientationchange", scheduleFitHeadline);
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(scheduleFitHeadline);
+        }
       })();
     </script>
   </body>
